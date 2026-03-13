@@ -4,16 +4,10 @@ const bodyParser = require("body-parser");
 
 const app = express();
 
-/* -------------------- VIEW ENGINE -------------------- */
-
 app.set("view engine", "ejs");
-
-/* -------------------- MIDDLEWARE -------------------- */
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
-
-/* -------------------- DATABASE CONNECTION -------------------- */
 
 const db = mysql.createConnection({
     host: process.env.RDS_HOSTNAME || "localhost",
@@ -26,7 +20,8 @@ const db = mysql.createConnection({
 db.connect((err) => {
     if (err) {
         console.log("Database connection failed");
-        throw err;
+        console.error(err);
+        return;
     }
 
     console.log("Database Connected");
@@ -41,20 +36,17 @@ db.connect((err) => {
     db.query(createTableQuery, (tableErr) => {
         if (tableErr) {
             console.log("Table creation failed");
-            throw tableErr;
+            console.error(tableErr);
+            return;
         }
-        console.log("Tasks table is ready");
+        console.log("Tasks table ready");
     });
 });
 
-/* -------------------- ROUTES -------------------- */
-
-// Home Page
 app.get("/", (req, res) => {
     res.render("index");
 });
 
-// Show all tasks
 app.get("/tasks", (req, res) => {
     db.query("SELECT * FROM tasks", (err, results) => {
         if (err) throw err;
@@ -62,7 +54,6 @@ app.get("/tasks", (req, res) => {
     });
 });
 
-// Add task
 app.post("/add-task", (req, res) => {
     const task = req.body.task;
 
@@ -76,7 +67,6 @@ app.post("/add-task", (req, res) => {
     );
 });
 
-// Delete task
 app.get("/delete/:id", (req, res) => {
     const id = req.params.id;
 
@@ -89,8 +79,6 @@ app.get("/delete/:id", (req, res) => {
         }
     );
 });
-
-/* -------------------- SERVER -------------------- */
 
 const PORT = process.env.PORT || 3000;
 
