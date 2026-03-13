@@ -16,10 +16,11 @@ app.use(express.static("public"));
 /* -------------------- DATABASE CONNECTION -------------------- */
 
 const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "taskdb"
+    host: process.env.RDS_HOSTNAME || "localhost",
+    user: process.env.RDS_USERNAME || "root",
+    password: process.env.RDS_PASSWORD || "",
+    database: process.env.RDS_DB_NAME || "taskdb",
+    port: process.env.RDS_PORT || 3306
 });
 
 db.connect((err) => {
