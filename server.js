@@ -10,11 +10,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 const db = mysql.createConnection({
-    host: process.env.RDS_HOSTNAME || "localhost",
-    user: process.env.RDS_USERNAME || "root",
-    password: process.env.RDS_PASSWORD || "",
-    database: process.env.RDS_DB_NAME || "taskdb",
-    port: process.env.RDS_PORT || 3306
+    host: process.env.DB_HOST || "localhost",
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "",
+    database: process.env.DB_NAME || "taskdb",
+    port: process.env.DB_PORT || 3306
 });
 
 db.connect((err) => {
